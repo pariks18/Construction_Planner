@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: planner-agent-api
+    env: python
+    rootDir: planner_agent
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: MONGODB_URI
+        sync: false
+      - key: MONGODB_DB_NAME
+        value: planning_agent
+      - key: CORS_ORIGIN_REGEX
+        value: https://.*\\.vercel\\.app
+

@@ -11,7 +11,7 @@ from core.planner_agent import PlannerAgent
 
 load_dotenv()
 
-MONGODB_URI = os.getenv("MONGODB_URI")
+MONGODB_URI = os.getenv("MONGODB_URI") or "mongodb://localhost:27017"
 MONGODB_DB_NAME = os.getenv("MONGODB_DB_NAME", "planning_agent")
 
 client = MongoClient(MONGODB_URI)
@@ -32,12 +32,21 @@ class PlanRequest(BaseModel):
 
 app = FastAPI(title="Planning Agent API")
 
+cors_origins_from_env = [
+    origin.strip()
+    for origin in (os.getenv("CORS_ORIGINS") or "").split(",")
+    if origin.strip()
+]
+cors_origin_regex = (os.getenv("CORS_ORIGIN_REGEX") or "").strip() or None
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
         "http://127.0.0.1:5173",
+        *cors_origins_from_env,
     ],
+    allow_origin_regex=cors_origin_regex,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -65,6 +74,11 @@ def ensure_demo_users():
 @app.on_event("startup")
 def on_startup():
     ensure_demo_users()
+
+
+@app.get("/health")
+def health():
+    return {"ok": True}
 
 
 @app.post("/api/auth/verify")
