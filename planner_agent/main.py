@@ -6,8 +6,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from pymongo import MongoClient
-
-from planner_agent.core.planner_agent import PlannerAgent
+from core.planner_agent import PlannerAgent
 
 
 load_dotenv()
