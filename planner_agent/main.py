@@ -11,14 +11,10 @@ from core.planner_agent import PlannerAgent
 
 load_dotenv()
 
-MONGODB_URI = os.getenv("MONGODB_URI", "mongodb://localhost:27017")
+MONGODB_URI = os.getenv("MONGODB_URI")
 MONGODB_DB_NAME = os.getenv("MONGODB_DB_NAME", "planning_agent")
 
-client = MongoClient(
-    MONGODB_URI,
-    tls=True,
-    tlsAllowInvalidCertificates=True,
-)
+client = MongoClient(MONGODB_URI)
 db = client[MONGODB_DB_NAME]
 users_collection = db["users"]
 plans_collection = db["plans"]
